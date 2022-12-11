@@ -12,6 +12,10 @@ I divided a day into parts with different triggers. Documentation can be found i
 ```json
 {
   "current": "string of a current trigger id, based on request time",
-  "checkpoints": [array of times, when there is a need to refresh LED brightness and color]
+  "checkpoints": [
+    "array of times",
+    "when there is a need to refresh LED brightness and color",
+    "for ex. Sat Dec 10 17:57:33 CET 2022"
+  ]
 }
 ```

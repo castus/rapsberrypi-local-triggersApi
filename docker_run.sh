@@ -2,11 +2,12 @@
 
 docker run \
   --rm \
-  --name raspberrypiLocal-triggerApi \
+  --name raspberrypiLocal-triggersApi \
   -p 8080:8080 \
   -v "$(pwd)"/src:/data \
   --workdir /data \
   --env-file=.env.secrets \
   -itd \
-  raspberrypiLocal-triggerApi-img \
+  --net mqtt-network \
+  raspberrypiLocal-triggersApi-img \
   /bin/bash -c "sh run.sh"

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build -t raspberrypiLocal-triggerApi-img .
+docker build -t raspberrypiLocal-triggersApi-img .
