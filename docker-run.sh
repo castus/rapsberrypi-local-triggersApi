@@ -9,5 +9,5 @@ docker run \
   --env-file=.env.secrets \
   -itd \
   --net mqtt-network \
-  raspberrypiLocal-triggersApi-img \
+  c4stus/raspberrypi:triggersapi \
   /bin/bash -c "sh run.sh"
