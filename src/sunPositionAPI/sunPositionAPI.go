@@ -34,7 +34,14 @@ func NewSunPositionAPI() *SunPositionAPI {
 func (s *SunPositionAPI) Get() SunPosition {
 	if s.hasCacheHit() {
 		fmt.Println("Cache hit, serving data from cache")
-		return s.SunPosition
+		data, err := GetDataFromCache()
+		if err != nil {
+			panic(err)
+		}
+		return SunPosition{
+			Sunset:  data.Sunset,
+			Sunrise: data.Sunrise,
+		}
 	}
 
 	fmt.Println("Cache miss, serving data from web")

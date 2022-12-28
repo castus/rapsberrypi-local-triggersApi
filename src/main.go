@@ -25,9 +25,11 @@ func main() {
 
 		b, err := json.Marshal(l.GetTriggerKey(loc, now))
 		if err != nil {
-			w.WriteHeader(500)
+			w.WriteHeader(http.StatusInternalServerError)
 			fmt.Println(err)
 			return
+		} else {
+			w.WriteHeader(http.StatusOK)
 		}
 
 		w.Header().Set("Content-Type", "application/json")
@@ -38,7 +40,7 @@ func main() {
 	})
 
 	port := ":8080"
-	fmt.Println("Server is running on port" + port)
+	fmt.Println("Triggers Api server is running on port" + port)
 
 	log.Fatal(http.ListenAndServe(port, nil))
 }
@@ -46,7 +48,7 @@ func main() {
 func automaticallyRefreshDataWhenDayStarts() {
 	c := cron.New()
 	_, err := c.AddFunc("0 2 * * *", func() {
-		fmt.Println("Cron function executes")
+		fmt.Println("Cron function executes, refreshing data when day starts")
 		s := sunPositionAPI.NewSunPositionAPI()
 		s.Get()
 	})
