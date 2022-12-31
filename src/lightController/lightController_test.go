@@ -14,6 +14,7 @@ var sunPositionAPI = sunAPI.SunPosition{
 	Sunrise: getParsedDate("2022-12-04T06:25:13"),
 	Sunset:  getParsedDate("2022-12-04T14:27:25"),
 }
+
 var location = getLocation()
 var sut = light.NewLightController(sunPositionAPI)
 
@@ -95,11 +96,26 @@ func TestTriggerLateEvening(t *testing.T) {
 	}
 }
 
-func TestTriggerNight(t *testing.T) {
+func TestTriggerNightSameDay(t *testing.T) {
+	if getTriggerKey(getParsedDate("2022-12-04T23:00:01")) != "trigger-1" {
+		t.Fail()
+	}
+	if getTriggerKey(getParsedDate("2022-12-04T00:00:00")) != "trigger-1" {
+		t.Fail()
+	}
+	if getTriggerKey(getParsedDate("2022-12-04T01:00:01")) != "trigger-1" {
+		t.Fail()
+	}
 	if getTriggerKey(getParsedDate("2022-12-04T22:00:01")) != "trigger-1" {
 		t.Fail()
 	}
-	if getTriggerKey(getParsedDate("2022-12-04T01:59:59")) != "trigger-1" {
+}
+
+func TestTriggerNightTheNextDay(t *testing.T) {
+	if getTriggerKey(getParsedDate("2022-12-05T23:00:01")) != "trigger-1" {
+		t.Fail()
+	}
+	if getTriggerKey(getParsedDate("2022-12-05T00:00:01")) != "trigger-1" {
 		t.Fail()
 	}
 }

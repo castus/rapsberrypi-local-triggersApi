@@ -1,6 +1,7 @@
 package lightController
 
 import (
+	"log"
 	"time"
 
 	"github.com/uniplaces/carbon"
@@ -39,20 +40,21 @@ Legend:
 * SS - Sunset
 
 Timeline:
-03:00         SR        SR+1        NOON-1      NOON+1      SS-1         SS         22:00       23:00      03:00
+03:00         SR        SR+1        NOON-1      NOON+1      SS-1         SS         22:00       23:00   03:00 next day
   +-----------------------------------------------------------------------------------------------------------+
   | trigger-2 | trigger-3 | trigger-4 | trigger-5 | trigger-4 | trigger-3 | trigger-6 | trigger-7 | trigger-1 |
   +-----------------------------------------------------------------------------------------------------------+
 */
 
 const (
-	trigger1 = "trigger-1"
-	trigger2 = "trigger-2"
-	trigger3 = "trigger-3"
-	trigger4 = "trigger-4"
-	trigger5 = "trigger-5"
-	trigger6 = "trigger-6"
-	trigger7 = "trigger-7"
+	trigger1   = "trigger-1"
+	trigger2   = "trigger-2"
+	trigger3   = "trigger-3"
+	trigger4   = "trigger-4"
+	trigger5   = "trigger-5"
+	trigger6   = "trigger-6"
+	trigger7   = "trigger-7"
+	trigger500 = "trigger-500"
 )
 
 type ApiResponse struct {
@@ -97,7 +99,9 @@ func (l *LightController) GetTriggerKey(loc *time.Location, now time.Time) ApiRe
 
 	var trigger string
 
-	if nowCarbon.Between(noonMinusOne, noonPlusOne, true) {
+	if !nowCarbon.IsSameDay(sunset) {
+		trigger = trigger1
+	} else if nowCarbon.Between(noonMinusOne, noonPlusOne, true) {
 		trigger = trigger5
 	} else if nowCarbon.Between(sunrisePlusOne, noonMinusOne, true) || nowCarbon.Between(noonPlusOne, sunsetMinusOne, true) {
 		trigger = trigger4
@@ -109,9 +113,16 @@ func (l *LightController) GetTriggerKey(loc *time.Location, now time.Time) ApiRe
 		trigger = trigger6
 	} else if nowCarbon.Between(evening, lateEvening, true) {
 		trigger = trigger7
-	} else {
+	} else if nowCarbon.Lte(night) || nowCarbon.Gte(lateEvening) {
 		trigger = trigger1
+	} else {
+		trigger = trigger500
 	}
+
+	log.Println("Sending response ...")
+	log.Printf("Trigger %s\n", trigger)
+	log.Printf("Checkpoints\n")
+	log.Println(checkpoints)
 
 	return ApiResponse{
 		trigger, checkpoints,

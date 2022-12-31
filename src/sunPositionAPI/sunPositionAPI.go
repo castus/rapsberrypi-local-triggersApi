@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -33,7 +34,7 @@ func NewSunPositionAPI() *SunPositionAPI {
 
 func (s *SunPositionAPI) Get() SunPosition {
 	if s.hasCacheHit() {
-		fmt.Println("Cache hit, serving data from cache")
+		log.Println("Sun position cache hit, serving data from cache")
 		data, err := GetDataFromCache()
 		if err != nil {
 			panic(err)
@@ -44,7 +45,7 @@ func (s *SunPositionAPI) Get() SunPosition {
 		}
 	}
 
-	fmt.Println("Cache miss, serving data from web")
+	log.Println("Sun position cache miss, serving data from web")
 	URL := fmt.Sprintf("https://api.sunrise-sunset.org/json?lat=%s&lng=%s&date=today&formatted=0",
 		os.Getenv("LATITUDE"),
 		os.Getenv("LONGITUDE"))
@@ -92,8 +93,8 @@ func getSunData(body []byte) (*Response, error) {
 	var s = new(Response)
 	err := json.Unmarshal(body, &s)
 	if err != nil {
-		fmt.Println("Error reading response from Sun position API")
-		fmt.Println(err)
+		log.Println("Error reading response from Sun position API")
+		log.Println(err)
 	}
 	return s, err
 }

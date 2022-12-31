@@ -47,7 +47,7 @@ func main() {
 
 func automaticallyRefreshDataWhenDayStarts() {
 	c := cron.New()
-	_, err := c.AddFunc("0 2 * * *", func() {
+	_, err := c.AddFunc("0 2 * * *", func() { // At 2 AM
 		fmt.Println("Cron function executes, refreshing data when day starts")
 		s := sunPositionAPI.NewSunPositionAPI()
 		s.Get()
