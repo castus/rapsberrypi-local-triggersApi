@@ -34,18 +34,20 @@ func NewSunPositionAPI() *SunPositionAPI {
 
 func (s *SunPositionAPI) Get() SunPosition {
 	if s.hasCacheHit() {
-		log.Println("Sun position cache hit, serving data from cache")
+		log.Println("type=debug msg=\"Sun position cache hit, serving data from cache\"")
 		data, err := GetDataFromCache()
 		if err != nil {
 			panic(err)
 		}
+		log.Printf("type=debug tag=sunrise %s\n", data.Sunrise.String())
+		log.Printf("type=debug tag=sunset %s\n", data.Sunset.String())
 		return SunPosition{
-			Sunset:  data.Sunset,
 			Sunrise: data.Sunrise,
+			Sunset:  data.Sunset,
 		}
 	}
 
-	log.Println("Sun position cache miss, serving data from web")
+	log.Println("type=debug msg=\"Sun position cache miss, serving data from web\"")
 	URL := fmt.Sprintf("https://api.sunrise-sunset.org/json?lat=%s&lng=%s&date=today&formatted=0",
 		os.Getenv("LATITUDE"),
 		os.Getenv("LONGITUDE"))
@@ -63,6 +65,8 @@ func (s *SunPositionAPI) Get() SunPosition {
 	}
 	res, err := getSunData(body)
 	s.SunPosition = res.Result
+	log.Printf("type=debug tag=sunrise %s\n", res.Result.Sunrise.String())
+	log.Printf("type=debug tag=sunset %s\n", res.Result.Sunset.String())
 
 	SaveDataToFile(res.Result)
 

@@ -39,16 +39,15 @@ func main() {
 		}
 	})
 
-	port := ":8080"
-	fmt.Println("Triggers Api server is running on port" + port)
-
-	log.Fatal(http.ListenAndServe(port, nil))
+	port := "8080"
+	fmt.Println("type=success msg=\"Triggers Api server is running\" port=" + port)
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
 func automaticallyRefreshDataWhenDayStarts() {
 	c := cron.New()
 	_, err := c.AddFunc("0 2 * * *", func() { // At 2 AM
-		fmt.Println("Cron function executes, refreshing data when day starts")
+		fmt.Println("type=debug tag=cron msg=\"Cron function executes, refreshing data when day starts\"")
 		s := sunPositionAPI.NewSunPositionAPI()
 		s.Get()
 	})

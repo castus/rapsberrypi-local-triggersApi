@@ -127,8 +127,6 @@ func (l *LightController) GetTriggerKey(loc *time.Location, now time.Time) APIRe
 		checkpointString = fmt.Sprintf("%s check-point-%d=\"%s\"", checkpointString, index+1, element)
 	}
 	log.Printf("type=debug tag=checkpoints %s\n", checkpointString)
-	log.Printf("type=debug tag=sunrise %s\n", checkpoints[0])
-	log.Printf("type=debug tag=sunset %s\n", checkpoints[5])
 
 	return APIResponse{
 		trigger, checkpoints,
