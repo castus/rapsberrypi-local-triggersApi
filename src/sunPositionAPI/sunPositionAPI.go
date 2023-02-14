@@ -65,8 +65,8 @@ func (s *SunPositionAPI) Get() SunPosition {
 	}
 	res, err := getSunData(body)
 	s.SunPosition = res.Result
-	log.Printf("type=debug tag=sunrise %s\n", res.Result.Sunrise.String())
-	log.Printf("type=debug tag=sunset %s\n", res.Result.Sunset.String())
+	log.Printf("type=debug tag=sunrise val=\"%s\"\n", res.Result.Sunrise.String())
+	log.Printf("type=debug tag=sunset val=\"%s\"\n", res.Result.Sunset.String())
 
 	SaveDataToFile(res.Result)
 

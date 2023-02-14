@@ -121,7 +121,7 @@ func (l *LightController) GetTriggerKey(loc *time.Location, now time.Time) APIRe
 		trigger = trigger500
 	}
 
-	log.Printf("type=debug msg=\"For the given time \"%s\", trigger is %s\"", now.String(), trigger)
+	log.Printf("type=debug msg=\"For the given time %s, trigger is %s\"\n", now.String(), trigger)
 	var checkpointString = ""
 	for index, element := range checkpoints {
 		checkpointString = fmt.Sprintf("%s check-point-%d=\"%s\"", checkpointString, index+1, element)
