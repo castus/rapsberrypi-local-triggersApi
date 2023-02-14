@@ -1,6 +1,7 @@
 package lightController
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -58,26 +59,26 @@ const (
 	trigger500 = "trigger-500"
 )
 
-type ApiResponse struct {
+type APIResponse struct {
 	Current     string   `json:"current"`
 	Checkpoints []string `json:"checkpoints"`
 }
 
 type LightController struct {
-	Api api.SunPosition
+	API api.SunPosition
 }
 
 func NewLightController(api api.SunPosition) *LightController {
 	return &LightController{
-		Api: api,
+		API: api,
 	}
 }
 
-func (l *LightController) GetTriggerKey(loc *time.Location, now time.Time) ApiResponse {
-	sunrise := carbon.NewCarbon(l.Api.Sunrise.In(loc))
-	sunrisePlusOne := carbon.NewCarbon(l.Api.Sunrise.Add(time.Hour * 1).In(loc))
-	sunset := carbon.NewCarbon(l.Api.Sunset.In(loc))
-	sunsetMinusOne := carbon.NewCarbon(l.Api.Sunset.Add(time.Hour * -1).In(loc))
+func (l *LightController) GetTriggerKey(loc *time.Location, now time.Time) APIResponse {
+	sunrise := carbon.NewCarbon(l.API.Sunrise.In(loc))
+	sunrisePlusOne := carbon.NewCarbon(l.API.Sunrise.Add(time.Hour * 1).In(loc))
+	sunset := carbon.NewCarbon(l.API.Sunset.In(loc))
+	sunsetMinusOne := carbon.NewCarbon(l.API.Sunset.Add(time.Hour * -1).In(loc))
 	nowCarbon := carbon.NewCarbon(now.In(loc))
 	noonPlusOne := carbon.NewCarbon(time.Date(now.Year(), now.Month(), now.Day(), 12, 0, 0, 0, loc).Add(time.Hour * 1))
 	noonMinusOne := carbon.NewCarbon(time.Date(now.Year(), now.Month(), now.Day(), 12, 0, 0, 0, loc).Add(time.Hour * -1))
@@ -89,10 +90,10 @@ func (l *LightController) GetTriggerKey(loc *time.Location, now time.Time) ApiRe
 	checkpoints = append(checkpoints,
 		sunrise.Format(time.UnixDate),
 		sunrisePlusOne.Format(time.UnixDate),
-		sunset.Format(time.UnixDate),
-		sunsetMinusOne.Format(time.UnixDate),
-		noonPlusOne.Format(time.UnixDate),
 		noonMinusOne.Format(time.UnixDate),
+		noonPlusOne.Format(time.UnixDate),
+		sunsetMinusOne.Format(time.UnixDate),
+		sunset.Format(time.UnixDate),
 		evening.Format(time.UnixDate),
 		lateEvening.Format(time.UnixDate),
 		night.Format(time.UnixDate),
@@ -120,12 +121,16 @@ func (l *LightController) GetTriggerKey(loc *time.Location, now time.Time) ApiRe
 		trigger = trigger500
 	}
 
-	log.Println("Sending response ...")
-	log.Printf("Trigger %s\n", trigger)
-	log.Printf("Checkpoints\n")
-	log.Println(checkpoints)
+	log.Printf("type=debug msg=\"For the given time \"%s\", trigger is %s\"", now.String(), trigger)
+	var checkpointString = ""
+	for index, element := range checkpoints {
+		checkpointString = fmt.Sprintf("%s check-point-%d=\"%s\"", checkpointString, index+1, element)
+	}
+	log.Printf("type=debug tag=checkpoints %s\n", checkpointString)
+	log.Printf("type=debug tag=sunrise %s\n", checkpoints[0])
+	log.Printf("type=debug tag=sunset %s\n", checkpoints[5])
 
-	return ApiResponse{
+	return APIResponse{
 		trigger, checkpoints,
 	}
 }
