@@ -1,7 +1,17 @@
-FROM --platform=linux/arm/v7 golang:latest
+FROM --platform=$BUILDPLATFORM golang:1.20 AS builder
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+RUN echo "I am running on $BUILDPLATFORM, building for $TARGETPLATFORM"
 
 WORKDIR /data
+COPY ./src /data
+RUN sh go-init.sh
+RUN go build -o triggers-api
 
+FROM --platform=$BUILDPLATFORM ubuntu:kinetic
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+RUN echo "I am running on $BUILDPLATFORM, building for $TARGETPLATFORM"
 RUN apt-get update -y && apt-get upgrade -y && apt-get install -yq --no-install-recommends \
     locales \
     nano
@@ -12,8 +22,7 @@ ENV LANG en_US.utf8
 ENV TZ=Europe/Warsaw
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-COPY ./src /data
-
 EXPOSE 8080
-
-CMD sh run.sh
+WORKDIR /root/
+COPY --from=builder /data/triggers-api ./
+CMD ["./triggers-api"]

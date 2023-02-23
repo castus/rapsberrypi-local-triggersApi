@@ -35,6 +35,8 @@ jobs:
     - name: Build and push Docker image
       uses: docker/build-push-action@v3.2.0
       with:
-        platforms: linux/arm/v7
+        platforms: |
+          linux/arm/v7
+          linux/arm64
         push: true
         tags: c4stus/raspberrypi:triggersapi
