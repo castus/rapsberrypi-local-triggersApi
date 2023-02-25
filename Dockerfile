@@ -16,12 +16,12 @@ RUN echo "I am running on $BUILDPLATFORM, building for $TARGETPLATFORM"
 RUN apt-get update -y
 RUN apt-get upgrade -y
 RUN apt-get install -yq \
-    locales \
-    curl \
-    tzdata \
-    ca-certificates \
-    openssl \
-    nano
+  locales \
+  curl \
+  tzdata \
+  ca-certificates \
+  openssl \
+  nano
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN update-ca-certificates
 
