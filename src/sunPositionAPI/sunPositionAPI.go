@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	cacheFile = "../cache.json"
+	cacheFile = "cache.json"
 )
 
 type SunPosition struct {
@@ -39,15 +39,15 @@ func (s *SunPositionAPI) Get() SunPosition {
 		if err != nil {
 			panic(err)
 		}
-		log.Printf("type=debug tag=sunrise %s\n", data.Sunrise.String())
-		log.Printf("type=debug tag=sunset %s\n", data.Sunset.String())
+		log.Printf("type=debug tag=sunrise time='%s'\n", data.Sunrise.String())
+		log.Printf("type=debug tag=sunset time='%s'\n", data.Sunset.String())
 		return SunPosition{
 			Sunrise: data.Sunrise,
 			Sunset:  data.Sunset,
 		}
 	}
 
-	log.Println("type=debug msg=\"Sun position cache miss, serving data from web\"")
+	log.Println("type=debug msg='Sun position cache miss, serving data from web'")
 	URL := fmt.Sprintf("https://api.sunrise-sunset.org/json?lat=%s&lng=%s&date=today&formatted=0",
 		os.Getenv("LATITUDE"),
 		os.Getenv("LONGITUDE"))
@@ -64,9 +64,13 @@ func (s *SunPositionAPI) Get() SunPosition {
 		panic("Reading body failed")
 	}
 	res, err := getSunData(body)
+	if err != nil {
+		panic(err)
+	}
+
 	s.SunPosition = res.Result
-	log.Printf("type=debug tag=sunrise val=\"%s\"\n", res.Result.Sunrise.String())
-	log.Printf("type=debug tag=sunset val=\"%s\"\n", res.Result.Sunset.String())
+	log.Printf("type=debug tag=sunrise val='%s'\n", res.Result.Sunrise.String())
+	log.Printf("type=debug tag=sunset val='%s'\n", res.Result.Sunset.String())
 
 	SaveDataToFile(res.Result)
 
@@ -75,7 +79,7 @@ func (s *SunPositionAPI) Get() SunPosition {
 
 func SaveDataToFile(position SunPosition) {
 	file, _ := json.MarshalIndent(position, "", " ")
-	_ = os.WriteFile(cacheFile, file, 0644)
+	_ = os.WriteFile(cacheFile, file, 0600)
 }
 
 func GetDataFromCache() (*SunPosition, error) {

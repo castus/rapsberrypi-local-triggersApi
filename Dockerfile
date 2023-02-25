@@ -15,6 +15,8 @@ ARG BUILDPLATFORM
 RUN echo "I am running on $BUILDPLATFORM, building for $TARGETPLATFORM"
 RUN apt-get update -y && apt-get upgrade -y && apt-get install -yq --no-install-recommends \
     locales \
+    curl \
+    tzdata \
     nano
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
