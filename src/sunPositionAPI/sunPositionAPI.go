@@ -39,8 +39,8 @@ func (s *SunPositionAPI) Get() SunPosition {
 		if err != nil {
 			panic(err)
 		}
-		log.Printf("type=debug tag=sunrise time='%s'\n", data.Sunrise.String())
-		log.Printf("type=debug tag=sunset time='%s'\n", data.Sunset.String())
+		log.Printf("type=debug tag=sunrise val=\"%s\"\n", data.Sunrise.String())
+		log.Printf("type=debug tag=sunset val=\"%s\"\n", data.Sunset.String())
 		return SunPosition{
 			Sunrise: data.Sunrise,
 			Sunset:  data.Sunset,
@@ -69,8 +69,8 @@ func (s *SunPositionAPI) Get() SunPosition {
 	}
 
 	s.SunPosition = res.Result
-	log.Printf("type=debug tag=sunrise val='%s'\n", res.Result.Sunrise.String())
-	log.Printf("type=debug tag=sunset val='%s'\n", res.Result.Sunset.String())
+	log.Printf("type=debug tag=sunrise val=\"%s\"\n", res.Result.Sunrise.String())
+	log.Printf("type=debug tag=sunset val=\"%s\"\n", res.Result.Sunset.String())
 
 	SaveDataToFile(res.Result)
 
