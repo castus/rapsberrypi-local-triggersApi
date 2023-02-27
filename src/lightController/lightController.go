@@ -124,7 +124,7 @@ func (l *LightController) GetTriggerKey(loc *time.Location, now time.Time) APIRe
 	for index := range checkpoints {
 		i := len(checkpoints) - index - 1
 		el := checkpoints[i]
-		checkpointString := fmt.Sprintf("checkpoint_number=%d checkpoint_date=\"%s\"", i, el)
+		checkpointString := fmt.Sprintf("checkpoint_number=%d checkpoint_date=\"%s\"", i+1, el)
 		log.Printf("type=debug tag=checkpoints %s\n", checkpointString)
 	}
 
